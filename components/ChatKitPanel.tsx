@@ -12,6 +12,7 @@ import {
 } from "@/lib/config";
 import { ErrorOverlay } from "./ErrorOverlay";
 import type { ColorScheme } from "@/hooks/useColorScheme";
+import { executeBackendTool } from "@/lib/backendTools";
 
 export type FactAction = {
   type: "save";
@@ -261,6 +262,11 @@ export function ChatKitPanel({
     [isWorkflowConfigured, setErrorState]
   );
 
+  // Después de las declaraciones de estado, antes de useChatKit
+  console.log('🔍 ChatKitPanel montado');
+  console.log('🔍 NEXT_PUBLIC_BACKEND_URL:', process.env.NEXT_PUBLIC_BACKEND_URL);
+
+
   const chatkit = useChatKit({
     api: { getClientSecret },
     theme: {
@@ -281,10 +287,76 @@ export function ChatKitPanel({
     threadItemActions: {
       feedback: false,
     },
+    //Aca se pueden agregar herramientas personalizadas
+    // onClientTool: async (invocation: {
+    //   name: string;
+    //   params: Record<string, unknown>;
+    // }) => {
+    //   if (invocation.name === "switch_theme") {
+    //     const requested = invocation.params.theme;
+    //     if (requested === "light" || requested === "dark") {
+    //       if (isDev) {
+    //         console.debug("[ChatKitPanel] switch_theme", requested);
+    //       }
+    //       onThemeRequest(requested);
+    //       return { success: true };
+    //     }
+    //     return { success: false };
+    //   }
+
+    //   if (invocation.name === "record_fact") {
+    //     const id = String(invocation.params.fact_id ?? "");
+    //     const text = String(invocation.params.fact_text ?? "");
+    //     if (!id || processedFacts.current.has(id)) {
+    //       return { success: true };
+    //     }
+    //     processedFacts.current.add(id);
+    //     void onWidgetAction({
+    //       type: "save",
+    //       factId: id,
+    //       factText: text.replace(/\s+/g, " ").trim(),
+    //     });
+    //     return { success: true };
+    //   }
+
+    //   return { success: false };
+    // },
     onClientTool: async (invocation: {
       name: string;
       params: Record<string, unknown>;
     }) => {
+      console.log('🎯🎯🎯 onClientTool EJECUTADO!!!', invocation);
+      // 🔥 NUEVO: Tools del backend
+      // Lista de tools que deben ejecutarse en tu backend Laravel
+      const backendTools = [
+        'test_backend_connection',
+        'identify_customer',
+        'save_vehicle_data',
+        'get_coverage_options',
+        'save_coverage_selection',
+        'create_pending_quote',
+        'show_data_form',
+        'show_vehicle_photos_form',
+        'show_payment_form',
+        'finalize_policy',
+      ];
+
+      // Si el tool es del backend, ejecutarlo ahí
+      if (backendTools.includes(invocation.name)) {
+        if (isDev) {
+          console.debug('[ChatKitPanel] Ejecutando backend tool:', invocation.name, invocation.params);
+        }
+
+        const result = await executeBackendTool(invocation.name, invocation.params);
+
+        if (isDev) {
+          console.debug('[ChatKitPanel] Resultado del backend:', result);
+        }
+
+        return result;
+      }
+
+      // Tools del cliente (los que ya estaban)
       if (invocation.name === "switch_theme") {
         const requested = invocation.params.theme;
         if (requested === "light" || requested === "dark") {
@@ -312,6 +384,8 @@ export function ChatKitPanel({
         return { success: true };
       }
 
+      // Si no es ningún tool conocido
+      console.warn('[ChatKitPanel] Tool desconocido:', invocation.name);
       return { success: false };
     },
     onResponseEnd: () => {
