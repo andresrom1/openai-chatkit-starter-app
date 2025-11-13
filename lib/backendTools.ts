@@ -1,10 +1,8 @@
-// lib/backendTools.ts
-
 const isDev = process.env.NODE_ENV !== "production";
 
 export async function executeBackendTool(
   toolName: string,
-  params: Record<string, any>
+  params: Record<string, unknown>
 ): Promise<Record<string, unknown>> {
   const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -70,11 +68,12 @@ export async function executeBackendTool(
       success: true,
       data,
     };
-  } catch (error: any) {
-    console.error(`❌ Error llamando al backend:`, error);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    console.error(`❌ Error llamando al backend:`, errorMessage);
     return {
       success: false,
-      error: error.message || "Unknown error",
+      error: errorMessage,
     };
   }
 }
