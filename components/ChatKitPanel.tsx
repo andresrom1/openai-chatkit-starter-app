@@ -347,11 +347,13 @@ export function ChatKitPanel({
 
       // Si el tool es del backend, ejecutarlo ahí
       if (backendTools.includes(invocation.name)) {
+        console.log('[ChatKitPanel] Ejecutando backend tool:', invocation.name, invocation.params);
         if (!isDev) {
           console.debug('[ChatKitPanel] Ejecutando backend tool:', invocation.name, invocation.params);
         }
 
         const result = await executeBackendTool(invocation.name, invocation.params);
+        console.log('[ChatKitPanel] Resultado del backend:', result);
 
         if (!isDev) {
           console.debug('[ChatKitPanel] Resultado del backend:', result);
