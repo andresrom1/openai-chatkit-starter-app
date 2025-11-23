@@ -241,7 +241,7 @@ export function ChatKitPanel({
         if (isMountedRef.current) {
           setErrorState({ session: null, integration: null });
         }
-
+        console.log("clientSecret:", clientSecret);
         return clientSecret;
       } catch (error) {
         console.error("Failed to create ChatKit session", error);
