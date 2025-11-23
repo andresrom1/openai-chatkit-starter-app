@@ -41,7 +41,7 @@ export async function executeBackendTool(
   try {
 
     // 🔥 Obtener el thread_id actual
-    const threadResponse = await fetch("/api/chatkit/current-thread");
+    const threadResponse = await fetch("/api/current-thread");
     let threadId = null;
     
     if (threadResponse.ok) {
