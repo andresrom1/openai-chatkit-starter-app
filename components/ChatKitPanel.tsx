@@ -325,6 +325,8 @@ export function ChatKitPanel({
       name: string;
       params: Record<string, unknown>;
     }) => {
+      console.log('session_id', chatkit.control.options.initialThread);
+      console.log('session_id', chatkit);
       console.log('🎯🎯🎯 onClientTool EJECUTADO!!!', invocation);
       // 🔥 NUEVO: Tools del backend
       // Lista de tools que deben ejecutarse en tu backend Laravel
