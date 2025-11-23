@@ -13,7 +13,6 @@ import {
 import { ErrorOverlay } from "./ErrorOverlay";
 import type { ColorScheme } from "@/hooks/useColorScheme";
 import { executeBackendTool } from "@/lib/backendTools";
-import { threadId } from "worker_threads"; //debugging
 
 export type FactAction = {
   type: "save";
@@ -326,9 +325,6 @@ export function ChatKitPanel({
       name: string;
       params: Record<string, unknown>;
     }) => {
-      console.log('session_id', getClientSecret);
-      console.log('session_id', threadId);
-
       console.log('🎯🎯🎯 onClientTool EJECUTADO!!!', invocation);
       // 🔥 NUEVO: Tools del backend
       // Lista de tools que deben ejecutarse en tu backend Laravel
