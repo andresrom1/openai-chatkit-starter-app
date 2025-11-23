@@ -160,13 +160,19 @@ export function ChatKitPanel({
 
   const getClientSecret = useCallback(
     async (currentSecret: string | null) => {
-      if (isDev) {
-        console.info("[ChatKitPanel] getClientSecret invoked", {
-          currentSecretPresent: Boolean(currentSecret),
-          workflowId: WORKFLOW_ID,
-          endpoint: CREATE_SESSION_ENDPOINT,
-        });
-      }
+      console.log("[ChatKitPanel] getClientSecret invoked", {
+        currentSecretPresent: Boolean(currentSecret),
+        workflowId: WORKFLOW_ID,
+        endpoint: CREATE_SESSION_ENDPOINT,
+      });
+
+      // if (isDev) {
+      //   console.info("[ChatKitPanel] getClientSecret invoked", {
+      //     currentSecretPresent: Boolean(currentSecret),
+      //     workflowId: WORKFLOW_ID,
+      //     endpoint: CREATE_SESSION_ENDPOINT,
+      //   });
+      // }
 
       if (!isWorkflowConfigured) {
         const detail =
@@ -202,8 +208,16 @@ export function ChatKitPanel({
           }),
         });
 
+        
         const raw = await response.text();
-
+        console.log("CREATE_SESSION_ENDPOINT:", response);
+        console.log("RAW", raw);
+        
+        console.log("[ChatKitPanel] createSession response", {
+          status: response.status,
+          ok: response.ok,
+          bodyPreview: raw.slice(0, 1600),
+        });
         if (isDev) {
           console.info("[ChatKitPanel] createSession response", {
             status: response.status,
