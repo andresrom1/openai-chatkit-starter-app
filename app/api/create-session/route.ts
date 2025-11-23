@@ -80,6 +80,17 @@ export async function POST(request: Request): Promise<Response> {
       }),
     });
 
+    // ====== LOGGING CRÍTICO: Ver respuesta completa de OpenAI ======
+    const upJson = await upstreamResponse.json().catch(() => ({}));
+    
+    console.log('=== OPENAI RESPONSE COMPLETE ===', {
+      status: upstreamResponse.status,
+      statusText: upstreamResponse.statusText,
+      headers: Object.fromEntries(upstreamResponse.headers.entries()),
+      body: JSON.stringify(upJson, null, 2),
+    });
+    // ================================================================
+
     if (process.env.NODE_ENV !== "production") {
       console.info("[create-session] upstream response", {
         status: upstreamResponse.status,
