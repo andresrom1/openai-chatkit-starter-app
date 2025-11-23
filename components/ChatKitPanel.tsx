@@ -234,9 +234,11 @@ export function ChatKitPanel({
         }
 
         const clientSecret = data?.client_secret as string | undefined;
-        const threadId = data?.thread_id as string | undefined;   // <-- ACA
+        const threadId = data?.thread_id as string | undefined;
+
         console.log("clientSecret:", clientSecret);
         console.log("THREAD_ID:", threadId);  // <-- ACA
+        
         if (!clientSecret) {
           throw new Error("Missing client secret in response");
         }

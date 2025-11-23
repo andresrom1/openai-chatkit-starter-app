@@ -113,16 +113,18 @@ export async function POST(request: Request): Promise<Response> {
       );
     }
 
+    console.log("------> Upstream JSON:", upstreamJson);
     const clientSecret = upstreamJson?.client_secret ?? null;
     const expiresAfter = upstreamJson?.expires_after ?? null;
-    const threadId =
-      (upstreamJson as any)?.session?.thread?.id ??
-      (upstreamJson as any)?.thread?.id ?? null;
+
+    // const threadId =
+    //   (upstreamJson as any)?.session?.thread?.id ??
+    //   (upstreamJson as any)?.thread?.id ?? null;
 
     const responsePayload = {
       client_secret: clientSecret,
       expires_after: expiresAfter,
-      thread_id: threadId,
+  //    thread_id: threadId,
     };
 
     return buildJsonResponse(
