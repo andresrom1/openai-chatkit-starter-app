@@ -2,12 +2,30 @@ import { WORKFLOW_ID } from "@/lib/config";
 
 export const runtime = "edge";
 
+// interface CreateSessionRequestBody {
+//   workflow?: { id?: string | null } | null;
+//   scope?: { user_id?: string | null } | null;
+//   workflowId?: string | null;
+//   chatkit_configuration?: {
+//     file_upload?: {
+//       enabled?: boolean;
+//     };
+//   };
+// }
+
 interface CreateSessionRequestBody {
   workflow?: { id?: string | null } | null;
   scope?: { user_id?: string | null } | null;
   workflowId?: string | null;
   chatkit_configuration?: {
     file_upload?: {
+      enabled?: boolean;
+    };
+    history?: {
+      enabled?: boolean;
+      recent_threads?: number | null;
+    };
+    automatic_thread_titling?: {
       enabled?: boolean;
     };
   };
@@ -60,6 +78,7 @@ export async function POST(request: Request): Promise<Response> {
 
     const apiBase = process.env.CHATKIT_API_BASE ?? DEFAULT_CHATKIT_BASE;
     const url = `${apiBase}/v1/chatkit/sessions`;
+    
     const upstreamResponse = await fetch(url, {
       method: "POST",
       headers: {
@@ -67,6 +86,17 @@ export async function POST(request: Request): Promise<Response> {
         Authorization: `Bearer ${openaiApiKey}`,
         "OpenAI-Beta": "chatkit_beta=v1",
       },
+      // body: JSON.stringify({
+      //   workflow: { id: resolvedWorkflowId },
+      //   user: userId,
+      //   chatkit_configuration: {
+      //     file_upload: {
+      //       enabled:
+      //         parsedBody?.chatkit_configuration?.file_upload?.enabled ?? false,
+      //     },
+      //   },
+      // }),
+
       body: JSON.stringify({
         workflow: { id: resolvedWorkflowId },
         user: userId,
@@ -74,6 +104,13 @@ export async function POST(request: Request): Promise<Response> {
           file_upload: {
             enabled:
               parsedBody?.chatkit_configuration?.file_upload?.enabled ?? false,
+          },
+          history: {
+            enabled: parsedBody?.chatkit_configuration?.history?.enabled ?? true,
+            recent_threads: parsedBody?.chatkit_configuration?.history?.recent_threads ?? null,
+          },
+          automatic_thread_titling: {
+            enabled: parsedBody?.chatkit_configuration?.automatic_thread_titling?.enabled ?? true,
           },
         },
       }),

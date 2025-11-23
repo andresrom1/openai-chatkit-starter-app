@@ -39,6 +39,22 @@ export async function executeBackendTool(
   }
 
   try {
+
+    // 🔥 Obtener el thread_id actual
+    const threadResponse = await fetch("/api/chatkit/current-thread");
+    let threadId = null;
+    
+    if (threadResponse.ok) {
+      const threadData = await threadResponse.json();
+      threadId = threadData.thread_id;
+    }
+
+    console.log(`❗❗❗🧵 Thread ID:`, threadId);
+
+    if (isDev) {
+      console.log(`🧵 Thread ID:`, threadId);
+    }
+
     console.log(`🔧 Llamando a ${backendUrl}${endpoint}`, params);
     if (isDev) {
       console.log(`🔧 Llamando a ${backendUrl}${endpoint}`, params);
@@ -49,7 +65,11 @@ export async function executeBackendTool(
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(params),
+      body: JSON.stringify({
+        ...params,
+        thread_id: threadId,
+        ai_provider: "openai-chatkit",
+      }),
     });
 
     console.log(`RESPONSE: `, response);
