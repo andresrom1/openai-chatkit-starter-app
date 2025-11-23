@@ -46,7 +46,7 @@ export async function executeBackendTool(
     
     if (threadResponse.ok) {
       const threadData = await threadResponse.json();
-      console.log(`❗❗❗🧵 Thread Response:`, threadData);
+      //console.log(`❗❗❗🧵 Thread Response:`, threadData);
       threadId = threadData.thread_id;
     }
 
@@ -56,7 +56,7 @@ export async function executeBackendTool(
       console.log(`🧵 Thread ID:`, threadId);
     }
 
-    console.log(`🔧 Llamando a ${backendUrl}${endpoint}`, params);
+    //console.log(`🔧 Llamando a ${backendUrl}${endpoint}`, params);
     if (isDev) {
       console.log(`🔧 Llamando a ${backendUrl}${endpoint}`, params);
     }

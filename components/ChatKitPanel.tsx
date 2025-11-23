@@ -160,19 +160,19 @@ export function ChatKitPanel({
 
   const getClientSecret = useCallback(
     async (currentSecret: string | null) => {
-      console.log("[ChatKitPanel] getClientSecret invoked", {
-        currentSecretPresent: Boolean(currentSecret),
-        workflowId: WORKFLOW_ID,
-        endpoint: CREATE_SESSION_ENDPOINT,
-      });
+      // console.log("[ChatKitPanel] getClientSecret invoked", {
+      //   currentSecretPresent: Boolean(currentSecret),
+      //   workflowId: WORKFLOW_ID,
+      //   endpoint: CREATE_SESSION_ENDPOINT,
+      // });
 
-      // if (isDev) {
-      //   console.info("[ChatKitPanel] getClientSecret invoked", {
-      //     currentSecretPresent: Boolean(currentSecret),
-      //     workflowId: WORKFLOW_ID,
-      //     endpoint: CREATE_SESSION_ENDPOINT,
-      //   });
-      // }
+      if (isDev) {
+        console.info("[ChatKitPanel] getClientSecret invoked", {
+          currentSecretPresent: Boolean(currentSecret),
+          workflowId: WORKFLOW_ID,
+          endpoint: CREATE_SESSION_ENDPOINT,
+        });
+      }
 
       if (!isWorkflowConfigured) {
         const detail =
@@ -210,14 +210,7 @@ export function ChatKitPanel({
 
         
         const raw = await response.text();
-        console.log("CREATE_SESSION_ENDPOINT:", response);
-        console.log("RAW", raw);
         
-        console.log("[ChatKitPanel] createSession response", {
-          status: response.status,
-          ok: response.ok,
-          bodyPreview: raw.slice(0, 1600),
-        });
         if (isDev) {
           console.info("[ChatKitPanel] createSession response", {
             status: response.status,
@@ -237,7 +230,6 @@ export function ChatKitPanel({
             );
           }
         }
-        console.log("DATA:", data);
 
         if (!response.ok) {
           const detail = extractErrorDetail(data, response.statusText);
@@ -252,7 +244,6 @@ export function ChatKitPanel({
         const threadId = data?.thread_id as string | undefined;
         const upstreamJson = data.upstreamJson as Record<string, unknown> | undefined;
 
-        console.log("clientSecret:", clientSecret);
         console.log("upstreamJson:", upstreamJson);  // <-- ACA
         
         if (!clientSecret) {
@@ -340,7 +331,7 @@ export function ChatKitPanel({
     // },
     onClientTool: async (invocation: {
       name: string; params: Record<string, unknown>; }) => {
-        console.log('🎯🎯🎯 onClientTool EJECUTADO!!!', invocation);
+        //console.log('🎯🎯🎯 onClientTool EJECUTADO!!!', invocation);
         // 🔥 NUEVO: Tools del backend
         // Lista de tools que deben ejecutarse en tu backend Laravel
         const backendTools = [
@@ -358,14 +349,11 @@ export function ChatKitPanel({
 
       // Si el tool es del backend, ejecutarlo ahí
       if (backendTools.includes(invocation.name)) {
-        console.log('[ChatKitPanel] Ejecutando backend tool:', invocation.name, invocation.params);
         if (!isDev) {
           console.debug('[ChatKitPanel] Ejecutando backend tool:', invocation.name, invocation.params);
         }
 
         const result = await executeBackendTool(invocation.name, invocation.params);
-        console.log('[ChatKitPanel] Resultado del backend:', result);
-
         if (!isDev) {
           console.debug('[ChatKitPanel] Resultado del backend:', result);
         }
