@@ -284,10 +284,6 @@ export function ChatKitPanel({
   );
 
   // Después de las declaraciones de estado, antes de useChatKit
-  console.log('🔍 ChatKitPanel montado');
-  console.log('🔍 NEXT_PUBLIC_BACKEND_URL:', process.env.NEXT_PUBLIC_BACKEND_URL);
-
-
   const chatkit = useChatKit({
     api: { getClientSecret },
     theme: {
