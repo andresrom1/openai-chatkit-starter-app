@@ -46,10 +46,10 @@ export async function executeBackendTool(
     
     if (threadResponse.ok) {
       const threadData = await threadResponse.json();
+      console.log(`❗❗❗🧵 Thread Response:`, threadData);
       threadId = threadData.thread_id;
     }
 
-    console.log(`❗❗❗🧵 Thread Response:`, threadResponse.json());
     console.log(`❗❗❗🧵 Thread ID:`, threadId);
 
     if (isDev) {
