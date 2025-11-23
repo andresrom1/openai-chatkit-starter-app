@@ -90,6 +90,10 @@ export async function POST(request: Request): Promise<Response> {
         status: upstreamResponse.status,
         statusText: upstreamResponse.statusText,
       });
+    console.log("[create-session] upstream response", {
+        status: upstreamResponse.status,
+        statusText: upstreamResponse.statusText,
+      });
 
     const upstreamJson = (await upstreamResponse.json().catch(() => ({}))) as
       | Record<string, unknown>
