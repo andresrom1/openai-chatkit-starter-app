@@ -328,34 +328,32 @@ export function ChatKitPanel({
     //   return { success: false };
     // },
     onClientTool: async (invocation: {
-      name: string;
-      params: Record<string, unknown>;
-    }) => {
-      console.log('🎯🎯🎯 onClientTool EJECUTADO!!!', invocation);
-      // 🔥 NUEVO: Tools del backend
-      // Lista de tools que deben ejecutarse en tu backend Laravel
-      const backendTools = [
-        'test_backend_connection',
-        'identify_customer',
-        'save_vehicle_data',
-        'get_coverage_options',
-        'save_coverage_selection',
-        'create_pending_quote',
-        'show_data_form',
-        'show_vehicle_photos_form',
-        'show_payment_form',
-        'finalize_policy',
-      ];
+      name: string; params: Record<string, unknown>; }) => {
+        console.log('🎯🎯🎯 onClientTool EJECUTADO!!!', invocation);
+        // 🔥 NUEVO: Tools del backend
+        // Lista de tools que deben ejecutarse en tu backend Laravel
+        const backendTools = [
+          'test_backend_connection',
+          'identify_customer',
+          'save_vehicle_data',
+          'get_coverage_options',
+          'save_coverage_selection',
+          'create_pending_quote',
+          'show_data_form',
+          'show_vehicle_photos_form',
+          'show_payment_form',
+          'finalize_policy',
+        ];
 
       // Si el tool es del backend, ejecutarlo ahí
       if (backendTools.includes(invocation.name)) {
-        if (isDev) {
+        if (!isDev) {
           console.debug('[ChatKitPanel] Ejecutando backend tool:', invocation.name, invocation.params);
         }
 
         const result = await executeBackendTool(invocation.name, invocation.params);
 
-        if (isDev) {
+        if (!isDev) {
           console.debug('[ChatKitPanel] Resultado del backend:', result);
         }
 
@@ -366,7 +364,7 @@ export function ChatKitPanel({
       if (invocation.name === "switch_theme") {
         const requested = invocation.params.theme;
         if (requested === "light" || requested === "dark") {
-          if (isDev) {
+          if (!isDev) {
             console.debug("[ChatKitPanel] switch_theme", requested);
           }
           onThemeRequest(requested);
@@ -413,7 +411,7 @@ export function ChatKitPanel({
   const activeError = errors.session ?? errors.integration;
   const blockingError = errors.script ?? activeError;
 
-  if (isDev) {
+  if (!isDev) {
     console.debug("[ChatKitPanel] render state", {
       isInitializingSession,
       hasControl: Boolean(chatkit.control),
