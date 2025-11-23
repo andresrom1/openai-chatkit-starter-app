@@ -115,9 +115,14 @@ export async function POST(request: Request): Promise<Response> {
 
     const clientSecret = upstreamJson?.client_secret ?? null;
     const expiresAfter = upstreamJson?.expires_after ?? null;
+    const threadId =
+      (upstreamJson as any)?.session?.thread?.id ??
+      (upstreamJson as any)?.thread?.id ?? null;
+
     const responsePayload = {
       client_secret: clientSecret,
       expires_after: expiresAfter,
+      thread_id: threadId,
     };
 
     return buildJsonResponse(

@@ -234,6 +234,9 @@ export function ChatKitPanel({
         }
 
         const clientSecret = data?.client_secret as string | undefined;
+        const threadId = data?.thread_id as string | undefined;   // <-- ACA
+        console.log("clientSecret:", clientSecret);
+        console.log("THREAD_ID:", threadId);  // <-- ACA
         if (!clientSecret) {
           throw new Error("Missing client secret in response");
         }
@@ -241,7 +244,7 @@ export function ChatKitPanel({
         if (isMountedRef.current) {
           setErrorState({ session: null, integration: null });
         }
-        console.log("clientSecret:", clientSecret);
+
         return clientSecret;
       } catch (error) {
         console.error("Failed to create ChatKit session", error);
