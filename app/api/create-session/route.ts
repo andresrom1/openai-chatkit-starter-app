@@ -1,7 +1,6 @@
 import { WORKFLOW_ID } from "@/lib/config";
 
-//export const runtime = "edge";
-export const runtime = "nodejs";
+export const runtime = "edge";
 
 interface CreateSessionRequestBody {
   workflow?: { id?: string | null } | null;
@@ -114,7 +113,6 @@ export async function POST(request: Request): Promise<Response> {
       );
     }
 
-    console.log("------> Upstream JSON:", upstreamJson);
     const clientSecret = upstreamJson?.client_secret ?? null;
     const expiresAfter = upstreamJson?.expires_after ?? null;
 
@@ -125,7 +123,7 @@ export async function POST(request: Request): Promise<Response> {
     const responsePayload = {
       client_secret: clientSecret,
       expires_after: expiresAfter,
-  //    thread_id: threadId,
+      upstreamJson: upstreamJson,
     };
 
     return buildJsonResponse(

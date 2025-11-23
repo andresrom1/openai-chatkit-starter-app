@@ -235,9 +235,10 @@ export function ChatKitPanel({
 
         const clientSecret = data?.client_secret as string | undefined;
         const threadId = data?.thread_id as string | undefined;
+        const upstreamJson = data.upstreamJson as Record<string, unknown> | undefined;
 
         console.log("clientSecret:", clientSecret);
-        console.log("THREAD_ID:", threadId);  // <-- ACA
+        console.log("upstreamJson:", upstreamJson);  // <-- ACA
         
         if (!clientSecret) {
           throw new Error("Missing client secret in response");
