@@ -79,6 +79,8 @@ export async function POST(request: Request): Promise<Response> {
         },
       }),
     });
+    const data = await upstreamResponse.json();
+    console.log("Upstream response data:", data);
 
     if (process.env.NODE_ENV !== "production") {
       console.info("[create-session] upstream response", {
