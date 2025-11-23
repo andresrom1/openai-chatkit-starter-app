@@ -86,14 +86,8 @@ export async function POST(request: Request): Promise<Response> {
         statusText: upstreamResponse.statusText,
       });
     }
-    console.info("[create-session] upstream response", {
-        status: upstreamResponse.status,
-        statusText: upstreamResponse.statusText,
-      });
-    console.log("[create-session] upstream response", {
-        status: upstreamResponse.status,
-        statusText: upstreamResponse.statusText,
-      });
+
+    console.log("Hola soy un log desde create-session");
 
     const upstreamJson = (await upstreamResponse.json().catch(() => ({}))) as
       | Record<string, unknown>
