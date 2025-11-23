@@ -237,6 +237,7 @@ export function ChatKitPanel({
             );
           }
         }
+        console.log("DATA:", data);
 
         if (!response.ok) {
           const detail = extractErrorDetail(data, response.statusText);

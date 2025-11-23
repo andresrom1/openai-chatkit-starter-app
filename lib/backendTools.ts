@@ -39,6 +39,7 @@ export async function executeBackendTool(
   }
 
   try {
+    console.log(`🔧 Llamando a ${backendUrl}${endpoint}`, params);
     if (isDev) {
       console.log(`🔧 Llamando a ${backendUrl}${endpoint}`, params);
     }
@@ -51,14 +52,16 @@ export async function executeBackendTool(
       body: JSON.stringify(params),
     });
 
+    console.log(`RESPONSE: `, response);
     if (!response.ok) {
       const errorText = await response.text();
       throw new Error(
         `HTTP ${response.status}: ${response.statusText} - ${errorText}`
       );
     }
-
+    
     const data = await response.json();
+    console.log(`✅ Respuesta del backend:`, data);
 
     if (isDev) {
       console.log(`✅ Respuesta del backend:`, data);
