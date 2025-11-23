@@ -43,14 +43,6 @@ export async function POST(request: Request): Promise<Response> {
     const resolvedWorkflowId =
       parsedBody?.workflow?.id ?? parsedBody?.workflowId ?? WORKFLOW_ID;
 
-    // ====== LOGGING: Session creation start ======
-    console.log('[Session] Creating session', {
-      workflow_id: resolvedWorkflowId,
-      user_id: userId,
-      has_existing_cookie: !resolvedSessionCookie,
-    });
-    // ==============================================
-
     if (process.env.NODE_ENV !== "production") {
       console.info("[create-session] handling request", {
         resolvedWorkflowId,
@@ -88,34 +80,16 @@ export async function POST(request: Request): Promise<Response> {
       }),
     });
 
-    // ====== LOGGING CRÍTICO: Ver respuesta completa de OpenAI ======
-    // IMPORTANTE: Solo llamar .json() UNA VEZ
-    const upJson = (await upstreamResponse.json().catch(() => ({}))) as
-      | Record<string, unknown>
-      | undefined;
-    
-    console.log('=== OPENAI RESPONSE COMPLETE ===');
-    console.log('Status:', upstreamResponse.status);
-    console.log('StatusText:', upstreamResponse.statusText);
-    console.log('Headers:', JSON.stringify(Object.fromEntries(upstreamResponse.headers.entries()), null, 2));
-    console.log('Body Keys:', upJson ? Object.keys(upJson) : []);
-    console.log('Full Body:', JSON.stringify(upJson, null, 2));
-    
-    
-    console.log('=== EXTRACTED DATA ===');
-    console.log('client_secret:', upJson?.client_secret ? 'EXISTS' : 'MISSING');
-    console.log('expires_after:', upJson?.expires_after);
-    console.log('thread_id:', upJson || 'NOT FOUND');
-    console.log('session_id (cookie):', userId);
-    console.log('======================');
-    // ================================================================
-
     if (process.env.NODE_ENV !== "production") {
       console.info("[create-session] upstream response", {
         status: upstreamResponse.status,
         statusText: upstreamResponse.statusText,
       });
     }
+    console.info("[create-session] upstream response", {
+        status: upstreamResponse.status,
+        statusText: upstreamResponse.statusText,
+      });
 
     const upstreamJson = (await upstreamResponse.json().catch(() => ({}))) as
       | Record<string, unknown>
