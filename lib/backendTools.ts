@@ -67,6 +67,7 @@ export async function executeBackendTool(
         ...params,
         thread_id: threadId,
         ai_provider: "openai-chatkit",
+        openai_user_id: "user", //to be implemented 
       }),
     });
 
