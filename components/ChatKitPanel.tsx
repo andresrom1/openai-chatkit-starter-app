@@ -337,7 +337,8 @@ export function ChatKitPanel({
         const backendTools = [
           'test_backend_connection',
           'identify_customer',
-          'save_vehicle_data',
+          'identify_vehicle',
+          //'save_vehicle_data',
           'get_coverage_options',
           'save_coverage_selection',
           'create_pending_quote',

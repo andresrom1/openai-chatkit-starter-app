@@ -18,7 +18,8 @@ export async function executeBackendTool(
   const endpointMap: Record<string, string> = {
     test_backend_connection: "/tools/test",
     identify_customer: "/tools/identify-customer",
-    save_vehicle_data: "/tools/save-vehicle-data",
+    identify_vehicle: "/tools/identify-vehicle",
+    // save_vehicle_data: "/tools/save-vehicle-data", reemplazada por 'identify_vehicle'
     get_coverage_options: "/tools/get-coverage-options",
     save_coverage_selection: "/tools/save-coverage-selection",
     create_pending_quote: "/tools/create-pending-quote",
@@ -46,17 +47,13 @@ export async function executeBackendTool(
     
     if (threadResponse.ok) {
       const threadData = await threadResponse.json();
-      //console.log(`❗❗❗🧵 Thread Response:`, threadData);
       threadId = threadData.thread_id;
     }
-
-    console.log(`❗❗❗🧵 Thread ID:`, threadId);
 
     if (isDev) {
       console.log(`🧵 Thread ID:`, threadId);
     }
 
-    //console.log(`🔧 Llamando a ${backendUrl}${endpoint}`, params);
     if (isDev) {
       console.log(`🔧 Llamando a ${backendUrl}${endpoint}`, params);
     }
