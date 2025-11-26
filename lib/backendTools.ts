@@ -39,9 +39,16 @@ export async function executeBackendTool(
     };
   }
 
-  try {
+  try { 
+      // Obtener el user ID (siempre disponible)
+      const openaiUserId = typeof window !== 'undefined' 
+        ? window.localStorage.getItem('openai_user_id') 
+        : null;
 
-    // 🔥 Obtener el thread_id actual
+      console.log('🔧 Backend tool:', toolName);
+      console.log('👤 OpenAI User ID:', openaiUserId);
+
+    // Obtener el thread_id actual
     const threadResponse = await fetch("/api/current-thread");
     let threadId = null;
     
@@ -67,7 +74,7 @@ export async function executeBackendTool(
         ...params,
         thread_id: threadId,
         ai_provider: "openai-chatkit",
-        openai_user_id: "user", //to be implemented 
+        openai_user_id: openaiUserId ? openaiUserId : "user", //to be implemented 
       }),
     });
 
