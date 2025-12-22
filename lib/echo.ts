@@ -7,7 +7,7 @@ import Pusher from 'pusher-js';
  * este proyecto corre sobre Next.js y no sobre Vite puro.
  */
 if (typeof window !== 'undefined') {
-    (window as any).Pusher = Pusher;
+    (window as Window & { Pusher?: typeof Pusher }).Pusher = Pusher;
 }
 
 export const getEcho = () => {
