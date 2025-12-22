@@ -13,6 +13,81 @@ import {
 import { ErrorOverlay } from "./ErrorOverlay";
 import type { ColorScheme } from "@/hooks/useColorScheme";
 import { executeBackendTool } from "@/lib/backendTools";
+import { getEcho } from "@/lib/echo";
+
+//Desde Aca
+//este bloque es lo referido a la escucha de eventos de Reverb
+
+/**
+ * Este componente escucha los eventos de Reverb y utiliza el objeto 'control'
+ * de OpenAI ChatKit para inyectar información en la conversación.
+ */
+interface ChatReverbListenerProps {
+  control: any; // El objeto control devuelto por useChatKit
+}
+
+export default function ChatReverbListener({ control }: ChatReverbListenerProps) {
+  const [threadId, setThreadId] = useState<string | null>(null);
+
+  // 1. Obtener el thread_id actual desde tu API interna (o localStorage si lo guardaste)
+  useEffect(() => {
+    async function fetchThread() {
+      try {
+        const response = await fetch("/api/current-thread");
+        if (response.ok) {
+          const data = await response.json();
+          setThreadId(data.thread_id);
+        }
+      } catch (error) {
+        // Silenciamos el error si no es crítico para la interfaz de usuario
+        console.debug("Aviso: No se pudo obtener el thread_id inicial", error);
+      }
+    }
+    fetchThread();
+  }, []);
+
+  // 2. Escuchar el evento de Reverb cuando el threadId y el control de ChatKit estén listos
+  useEffect(() => {
+    if (!threadId || !control) return;
+
+    const echo = getEcho();
+    if (!echo) return;
+
+    const channelName = `chat.${threadId}`;
+    console.log(`📡 Reverb: Escuchando canal privado ${channelName}`);
+
+    // Suscripción al canal privado usando Laravel Echo
+    const channel = echo.private(channelName)
+      .listen('.quote.processed', (event: any) => {
+        console.log('⚡ Evento de cotización recibido:', event);
+
+        // Si el evento trae el payload para la inteligencia artificial
+        if (event.requires_ai_injection && event.ai_payload) {
+          /**
+           * INYECCIÓN EN CHATKIT:
+           * Utilizamos el método addMessage del objeto control para insertar
+           * un mensaje de sistema que el modelo de OpenAI procesará.
+           */
+          control.addMessage({
+            role: 'system',
+            content: `[SISTEMA] Se han recibido resultados del motor de cotización:
+              ${JSON.stringify(event.ai_payload)}
+              Por favor, analiza estos datos y comunica al usuario que sus opciones ya están disponibles.`
+          });
+        }
+      });
+
+    // Limpieza de la conexión al desmontar el componente
+    return () => {
+      console.log(`🔌 Abandonando canal ${channelName}`);
+      echo.leave(channelName);
+    };
+  }, [threadId, control]);
+
+  // Este componente no renderiza nada visualmente
+  return null;
+}
+// hasta aca
 
 export type FactAction = {
   type: "save";
@@ -204,6 +279,12 @@ export function ChatKitPanel({
               file_upload: {
                 enabled: true,
               },
+              history: {
+                enabled: false, //desactivo historial
+              },
+              automatic_thread_titling: {
+                enabled: false, //desactivo titulo automatico
+              }
             },
           }),
         });

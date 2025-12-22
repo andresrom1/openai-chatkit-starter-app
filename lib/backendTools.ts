@@ -40,7 +40,7 @@ export async function executeBackendTool(
   }
 
   try { 
-      // Obtener el user ID (siempre disponible)
+      // Obtener el user ID (siempre disponible) Esto puede volar tranquilamente
       const openaiUserId = typeof window !== 'undefined' 
         ? window.localStorage.getItem('openai_user_id') 
         : null;
@@ -74,6 +74,7 @@ export async function executeBackendTool(
         ...params,
         thread_id: threadId,
         ai_provider: "openai-chatkit",
+        channel: "web",
         openai_user_id: openaiUserId ? openaiUserId : "user", //to be implemented 
       }),
     });
