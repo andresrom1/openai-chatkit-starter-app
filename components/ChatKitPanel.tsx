@@ -23,7 +23,7 @@ import { getEcho } from "@/lib/echo";
  * de OpenAI ChatKit para inyectar información en la conversación.
  */
 interface ChatReverbListenerProps {
-  control: any; // El objeto control devuelto por useChatKit
+  control: ReturnType<typeof useChatKit>; // El objeto control devuelto por useChatKit
 }
 
 export default function ChatReverbListener({ control }: ChatReverbListenerProps) {
@@ -56,9 +56,15 @@ export default function ChatReverbListener({ control }: ChatReverbListenerProps)
     const channelName = `chat.${threadId}`;
     console.log(`📡 Reverb: Escuchando canal privado ${channelName}`);
 
+    // Definición de tipos para el evento de Reverb
+    interface ReverbEvent {
+      requires_ai_injection: boolean;
+      ai_payload: Record<string, any>; // Aquí podrías ser más específico si sabes la estructura de ai_payload
+    }
+
     // Suscripción al canal privado usando Laravel Echo
     const channel = echo.private(channelName)
-      .listen('.quote.processed', (event: any) => {
+      .listen('.quote.processed', (event: ReverbEvent) => {
         console.log('⚡ Evento de cotización recibido:', event);
 
         // Si el evento trae el payload para la inteligencia artificial
@@ -68,11 +74,15 @@ export default function ChatReverbListener({ control }: ChatReverbListenerProps)
            * Utilizamos el método addMessage del objeto control para insertar
            * un mensaje de sistema que el modelo de OpenAI procesará.
            */
-          control.addMessage({
-            role: 'system',
-            content: `[SISTEMA] Se han recibido resultados del motor de cotización:
-              ${JSON.stringify(event.ai_payload)}
-              Por favor, analiza estos datos y comunica al usuario que sus opciones ya están disponibles.`
+          // control.addMessage({
+          //   role: 'system',
+          //   content: `[SISTEMA] Se han recibido resultados del motor de cotización:
+          //     ${JSON.stringify(event.ai_payload)}
+          //     Por favor, analiza estos datos y comunica al usuario que sus opciones ya están disponibles.`
+          // });
+          control.sendUserMessage({
+            text: `He recibido los resultados del motor de cotización: ${JSON.stringify(event.ai_payload)}. Por favor, analiza estos datos y comunica al usuario que sus opciones ya están disponibles.`,
+            newThread: false,
           });
         }
       });
