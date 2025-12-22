@@ -26,6 +26,53 @@ interface ChatReverbListenerProps {
   control: ReturnType<typeof useChatKit>; // El objeto control devuelto por useChatKit
 }
 
+// Definición de tipos para las alternativas de cotización
+interface AlternativeFeature {
+  feature: string;
+  description: string;
+}
+
+interface ParsedAlternative {
+  external_code: string;
+  external_quote_id: string;
+  aseguradora: string;
+  descripcion: string;
+  titulo: string;
+  normalized_grade: string;
+  precio: number;
+  moneda: string;
+  marketing_title: string;
+  sum_insured_text: string;
+  features_tags: string[];
+  full_details: { [key: string]: string };
+}
+
+// Definición de tipos para la respuesta cruda del backend
+interface RawResponse {
+  source: string;
+  snapshot_id: string;
+}
+
+interface Data {
+  task_id: string;
+  status: string;
+  raw: RawResponse;
+  parsed_alternatives: ParsedAlternative[];
+}
+
+// Definición de tipos para ai_payload
+interface AiPayload {
+  event: string;
+  source: string;
+  data: Data;
+}
+
+// Definición de tipos para el evento de Reverb
+interface ReverbEvent {
+  requires_ai_injection: boolean;
+  ai_payload: AiPayload;
+}
+
 export default function ChatReverbListener({ control }: ChatReverbListenerProps) {
   const [threadId, setThreadId] = useState<string | null>(null);
 
@@ -56,11 +103,7 @@ export default function ChatReverbListener({ control }: ChatReverbListenerProps)
     const channelName = `chat.${threadId}`;
     console.log(`📡 Reverb: Escuchando canal privado ${channelName}`);
 
-    // Definición de tipos para el evento de Reverb
-    interface ReverbEvent {
-      requires_ai_injection: boolean;
-      ai_payload: Record<string, any>; // Aquí podrías ser más específico si sabes la estructura de ai_payload
-    }
+
 
     // Suscripción al canal privado usando Laravel Echo
     const channel = echo.private(channelName)
